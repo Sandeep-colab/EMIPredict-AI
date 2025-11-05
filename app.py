@@ -5,6 +5,7 @@ import os
 import pickle
 from dataclasses import dataclass
 import warnings
+import mlflow.sklearn  # <--- NEW: MLflow Import Added
 warnings.filterwarnings('ignore')
 
 # --- ANIMATED RGB BACKGROUND FUNCTION (MORE INTERESTING) ---
@@ -76,6 +77,7 @@ def set_animated_background():
 def load_object(file_path):
     """Loads a Python object from a binary file."""
     try:
+        # NOTE: This function is now ONLY used for the preprocessor.pkl
         with open(file_path, "rb") as file_obj:
             return pickle.load(file_obj)
     except Exception as e:
@@ -116,20 +118,32 @@ class CustomData:
         df = pd.DataFrame([self.data])
         for col in ['monthly_salary', 'bank_balance', 'emergency_fund', 'requested_amount', 'current_emi_amount', 'credit_score', 'age', 'years_of_employment', 'family_size', 'dependents', 'requested_tenure']:
              if col in df.columns:
-                df[col] = pd.to_numeric(df[col], errors='coerce')
+                 df[col] = pd.to_numeric(df[col], errors='coerce')
         return df
 
 
 class PredictionPipeline:
     def __init__(self):
         self.preprocessor_path = os.path.join('artifacts', "preprocessor.pkl")
-        self.regression_model_path = os.path.join("artifacts", "best_regression_model.pkl")
+        
+        # --- MLflow URI using the confirmed RUN ID and artifact path 'model' ---
+        self.mlflow_model_uri = "runs:/18a988f2a822498098b2545646b54ffa/model" 
+        # ----------------------------------------------------------------------
 
     @st.cache_resource
     def load_artifacts(_self):
-        """Loads the preprocessor and trained regression model."""
+        """Loads the preprocessor (pickle) and the trained regression model (MLflow)."""
+        
+        # Load preprocessor using standard pickle function
         preprocessor = load_object(_self.preprocessor_path)
-        reg_model = load_object(_self.regression_model_path)
+        
+        # Load the model using MLflow's standard API
+        try:
+            reg_model = mlflow.sklearn.load_model(_self.mlflow_model_uri)
+        except Exception as e:
+            st.error(f"Error loading MLflow model from URI: {_self.mlflow_model_uri}. Ensure 'mlruns' directory is in the root and the RUN ID is correct.")
+            st.stop()
+            
         return preprocessor, reg_model
 
     def predict_loan_decision(self, applicant_data: pd.DataFrame, requested_emi_amount: float) -> dict:
@@ -171,7 +185,7 @@ def main():
     
     st.set_page_config(page_title="EMI Predict AI", layout="wide")
     st.title("💰 EMI Predict AI: Loan Eligibility Predictor")
-    st.subheader("Powered by Regression Model (R²: 0.9792)")
+    st.subheader("Powered by Regression Model (R²: 0.9708) - MLflow Managed") # Updated R^2 from last run
 
     
     # Initialize the pipeline

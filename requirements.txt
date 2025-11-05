@@ -7,3 +7,4 @@ imbalanced-learn
 xgboost
 tabulate
 streamlit
+mlflow
