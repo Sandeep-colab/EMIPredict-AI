@@ -127,7 +127,7 @@ class PredictionPipeline:
         self.preprocessor_path = os.path.join('artifacts', "preprocessor.pkl")
         
         # --- MLflow URI using the confirmed RUN ID and artifact path 'model' ---
-        self.mlflow_model_uri = "mlruns\978349954066487471\models\m-4e63d19aaeb34b5daab13b059f36502d\artifacts\model" 
+        self.mlflow_model_uri = "mlruns\978349954066487471\models\m-4e63d19aaeb34b5daab13b059f36502d\\artifacts\model" 
         # ----------------------------------------------------------------------
 
     @st.cache_resource
