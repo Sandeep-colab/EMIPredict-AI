@@ -1,0 +1,10 @@
+artifact_location: file:///S:/Project%20Files/EMIPredict-AI/mlruns/693448085267803079/models/m-4804fdb535b64dd0aab5e2387a490362/artifacts
+creation_timestamp: 1762864397382
+experiment_id: '693448085267803079'
+last_updated_timestamp: 1762864409008
+model_id: m-4804fdb535b64dd0aab5e2387a490362
+model_type: null
+name: model
+source_run_id: c0f883aa785b43a68c7ff0d6fa4721ff
+status: 2
+status_message: null
