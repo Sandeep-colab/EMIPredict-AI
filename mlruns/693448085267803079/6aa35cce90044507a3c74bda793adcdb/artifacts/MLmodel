@@ -1,4 +1,4 @@
-artifact_path: file:///S:/Project%20Files/EMIPredict-AI/mlruns/693448085267803079/models/m-782d6ea487c94a6da6a54184978942cc/artifacts
+artifact_path: file:mlruns/693448085267803079/models/m-782d6ea487c94a6da6a54184978942cc/artifacts
 flavors:
   python_function:
     env:
